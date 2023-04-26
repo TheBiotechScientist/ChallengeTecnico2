@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup as bs
 import requests
 import json
 
-url = input('Inserta la url para web scraping: \n')
+url = input('Visita la página \n https://super.walmart.com.mx/all-departments \n y selecciona el link de una categoría de algún departamento. Copia el link y pegao a continuación: \n')
 ind = url.index('x')
 main_url = url[:ind+1]
 
@@ -28,16 +28,17 @@ soup = bs(response.text, 'html.parser')
 # Se identificaron los elementos y clases que contienen la información pertinente
 url_h3s = soup.find_all('a', {'class': r'absolute w-100 h-100 z-1 hide-sibling-opacity'})
 
-# Separamos urls de titulos h3
-urls = [u.get('href') for u in url_h3s]
+# Separamos titulos h3 de los urls
 h3s = [h.text for h in url_h3s]
+urls = [u.get('href') for u in url_h3s]
 
-# Buscamos los precios
-# div_prices = soup.find_all('div', {'class': 'mr1 mr2-xl b black lh-copy f5 f4-l'})
+# Localizamos los precios
 prices = [p.text for p in soup.find_all('div', {'class': 'mr1 mr2-xl b black lh-copy f5 f4-l'})]
 
 # Diccionario para almacenar la información
 result = dict()
+
+# Vaciamos los datos en el diccionario
 for h3,price,url in zip(h3s,prices,urls):
     result[h3] = {'Precio' : price, 'Url' : main_url+url}
 
